@@ -9,9 +9,9 @@
 require_relative 'state_data'
 
 class VirusPredictor
-  def initialize(state_of_origin, population_density, population)
+  def initialize(state_of_origin, density, count)
     @state = state_of_origin
-    @population = Population.new(population, population_density)
+    @population = Population.new(count, density)
   end
 
   def virus_effects
@@ -21,6 +21,11 @@ class VirusPredictor
 end
 
 class Population
+  EXTREME_DENSITY = 200
+  HIGH_DENSITY = 150
+  NORMAL_DENSITY = 100
+  LOW_DENSITY = 50
+
   def initialize(count, density)
     @count = count
     @density = density
@@ -40,13 +45,13 @@ class Population
   private
 
   def death_factor(population_density)
-    if population_density >= 200
+    if population_density >= EXTREME_DENSITY
       0.4
-    elsif population_density >= 150
+    elsif population_density >= HIGH_DENSITY
       0.3
-    elsif population_density >= 100
+    elsif population_density >= NORMAL_DENSITY
       0.2
-    elsif population_density >= 50
+    elsif population_density >= LOW_DENSITY
       0.1
     else
       0.05
@@ -54,13 +59,13 @@ class Population
   end
 
   def speed_increment(population_density)
-    if population_density >= 200
+    if population_density >= EXTREME_DENSITY
       0.5
-    elsif population_density >= 150
+    elsif population_density >= HIGH_DENSITY
       1
-    elsif population_density >= 100
+    elsif population_density >= NORMAL_DENSITY
       1.5
-    elsif population_density >= 50
+    elsif population_density >= LOW_DENSITY
       2
     else
       2.5
