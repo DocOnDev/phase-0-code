@@ -20,6 +20,22 @@ class VirusPredictor
   end
 end
 
+class Population
+  def initialize(count, density_value)
+    @count = count
+    @density = Density.new(density_value)
+  end
+
+  def predicted_deaths
+    (@count * @density.death_factor).floor
+  end
+
+  def months_to_spread
+    @density.months_to_spread
+  end
+
+end
+
 class Density
   DENSITY_TYPES = {
     "Extreme" => {base: 200, ceiling: 100000, factor: 0.4, months: 0.5},
@@ -53,21 +69,6 @@ class Density
   end
 end
 
-class Population
-  def initialize(count, density_value)
-    @count = count
-    @density = Density.new(density_value)
-  end
-
-  def predicted_deaths
-    (@count * @density.death_factor).floor
-  end
-
-  def months_to_spread
-    @density.months_to_spread
-  end
-
-end
 
 #=======================================================================
 
