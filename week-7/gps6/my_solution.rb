@@ -43,32 +43,38 @@ class Population
 
   private
 
+  def is_extreme_density?
+    @density >= EXTREME_DENSITY
+  end
+
+  def is_high_density?
+    @density >= HIGH_DENSITY
+  end
+
+  def is_normal_density?
+    @density >= NORMAL_DENSITY
+  end
+
+  def is_low_density?
+    @density >= LOW_DENSITY
+  end
+
   def death_factor(population_density)
-    if population_density >= EXTREME_DENSITY
-      0.4
-    elsif population_density >= HIGH_DENSITY
-      0.3
-    elsif population_density >= NORMAL_DENSITY
-      0.2
-    elsif population_density >= LOW_DENSITY
-      0.1
-    else
-      0.05
-    end
+      factor = 0.05
+      factor = 0.4 if is_extreme_density?
+      factor = 0.3 if is_high_density?
+      factor = 0.2 if is_normal_density?
+      factor = 0.1 if is_low_density?
+      factor
   end
 
   def speed_increment(population_density)
-    if population_density >= EXTREME_DENSITY
-      0.5
-    elsif population_density >= HIGH_DENSITY
-      1
-    elsif population_density >= NORMAL_DENSITY
-      1.5
-    elsif population_density >= LOW_DENSITY
-      2
-    else
-      2.5
-    end
+    increment = 2.5
+    increment = 0.5 if is_extreme_density?
+    increment = 1 if is_high_density?
+    increment = 1.5 if is_normal_density?
+    increment = 2 if is_low_density?
+    increment
   end
 end
 
