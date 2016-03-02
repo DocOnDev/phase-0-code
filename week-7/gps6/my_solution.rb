@@ -16,7 +16,7 @@ class VirusPredictor
 
   def virus_effects
     print "#{@state} will lose #{@population.predicted_deaths} people in this outbreak"
-    puts " and will spread across the state in #{@population.speed_of_spread} months.\n\n"
+    puts " and will spread across the state in #{@population.months_to_spread} months.\n\n"
   end
 end
 
@@ -32,11 +32,10 @@ class Population
   end
 
   def predicted_deaths
-    # predicted deaths is solely based on population density
     (@count * death_factor(@density)).floor
   end
 
-  def speed_of_spread #in months
+  def months_to_spread
     # We are still perfecting our formula here. The speed is also affected
     # by additional factors we haven't added into this functionality.
     0.0 + speed_increment(@density)
