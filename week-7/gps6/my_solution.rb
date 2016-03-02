@@ -21,57 +21,36 @@ class VirusPredictor
 end
 
 class Density
-  EXTREME_BASE = 200
-  HIGH_BASE = 150
-  NORMAL_BASE = 100
-  LOW_BASE = 50
-  TINY_TOP = 49
+  DENSITY_TYPES = {
+    "Extreme" => {base: 200, ceiling: 100000, factor: 0.4, months: 0.5},
+    "High" => {base: 150, ceiling: 200, factor: 0.3, months: 1.0},
+    "Normal" => {base: 100, ceiling: 150, factor: 0.2, months: 1.5},
+    "Low" => {base: 50, ceiling: 100, factor: 0.1, months: 2.0},
+    "Tiny" => {base: -100, ceiling: 50, factor: 0.05, months: 2.5}
+  }
 
   def initialize(value)
     @value = value
+    @density_type = get_density_type(value)
   end
 
-  def is_extreme?
-    @value >= EXTREME_BASE
-  end
-
-  def is_high?
-    @value >= HIGH_BASE
-  end
-
-  def is_normal?
-    @value >= NORMAL_BASE
-  end
-
-  def is_low?
-    @value >= LOW_BASE
-  end
-
-  def is_tiny?
-    @value <= TINY_TOP
+  def get_density_type(value)
+    DENSITY_TYPES.each { |name, data|
+      return name if value.between?(data[:base], data[:ceiling])
+    }
+    return "Tiny"
   end
 
   def death_factor
-      factor = 0.4 if is_extreme?
-      factor = 0.3 if is_high?
-      factor = 0.2 if is_normal?
-      factor = 0.1 if is_low?
-      factor = 0.05 if is_tiny?
-      factor
+      DENSITY_TYPES[@density_type][:factor]
   end
 
   def months_to_spread
     # We are still perfecting our formula here. The speed is also affected
     # by additional factors we haven't added into this functionality.
 
-    increment = 0.5 if is_extreme?
-    increment = 1.0 if is_high?
-    increment = 1.5 if is_normal?
-    increment = 2.0 if is_low?
-    increment = 2.5 if is_tiny?
-    increment
+    DENSITY_TYPES[@density_type][:months]
   end
-
 end
 
 class Population
