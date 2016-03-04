@@ -37,38 +37,110 @@ class Population
 end
 
 class Density
-  DENSITY_TYPES = {
-    "Extreme" => {base: 200, ceiling: 100000, factor: 0.4, months: 0.5},
-    "High" => {base: 150, ceiling: 200, factor: 0.3, months: 1.0},
-    "Normal" => {base: 100, ceiling: 150, factor: 0.2, months: 1.5},
-    "Low" => {base: 50, ceiling: 100, factor: 0.1, months: 2.0},
-    "Tiny" => {base: -100, ceiling: 50, factor: 0.05, months: 2.5}
-  }
-
   def initialize(value)
     @value = value
-    @density_type = get_density_type(value)
-  end
-
-  def get_density_type(value)
-    DENSITY_TYPES.each { |name, data|
-      return name if value.between?(data[:base], data[:ceiling])
-    }
-    return "Tiny"
+    @density_type = DensityType.create(value)
   end
 
   def death_factor
-      DENSITY_TYPES[@density_type][:factor]
+      @density_type.factor
   end
 
   def months_to_spread
     # We are still perfecting our formula here. The speed is also affected
     # by additional factors we haven't added into this functionality.
 
-    DENSITY_TYPES[@density_type][:months]
+    @density_type.months
+  end
+
+end
+
+class DensityType
+  attr_accessor :name, :ceiling, :floor, :factor, :months
+  @name = "Example"
+  @floor = 0
+  @ceiling = 0
+  @factor = 0.0
+  @months = 0.0
+
+  @@sub_classes = {
+  }
+
+  def self.create density_value
+    @@sub_classes.each { |name, data|
+      candidate = data.new
+      return candidate if density_value.between?(candidate.floor, candidate.ceiling)
+    }
+  end
+
+  def self.register_density_type name
+    @@sub_classes[name] = self
+  end
+
+  def display
+    puts "I'm a density type of #{@name} with a floor of #{@floor}"
   end
 end
 
+class ExtremeDensityType < DensityType
+  TYPE_NAME = "Extreme"
+  def initialize
+    @name = TYPE_NAME
+    @floor = 200
+    @ceiling = 100000
+    @factor = 0.4
+    @months = 0.5
+  end
+  register_density_type TYPE_NAME
+end
+
+class HighDensityType < DensityType
+  TYPE_NAME = "High"
+  def initialize
+    @name = TYPE_NAME
+    @floor = 150
+    @ceiling = 200
+    @factor = 0.3
+    @months = 1.0
+  end
+  register_density_type TYPE_NAME
+end
+
+class NormalDensityType < DensityType
+  TYPE_NAME = "Normal"
+  def initialize
+    @name = TYPE_NAME
+    @floor = 100
+    @ceiling = 150
+    @factor = 0.2
+    @months = 1.5
+  end
+  register_density_type TYPE_NAME
+end
+
+class LowDensityType < DensityType
+  TYPE_NAME = "Low"
+  def initialize
+    @name = TYPE_NAME
+    @floor = 50
+    @ceiling = 100
+    @factor = 0.1
+    @months = 2.0
+  end
+  register_density_type TYPE_NAME
+end
+
+class TinyDensityType < DensityType
+  TYPE_NAME = "Tiny"
+  def initialize
+    @name = TYPE_NAME
+    @floor = -100
+    @ceiling = 50
+    @factor = 0.05
+    @months = 2.5
+  end
+  register_density_type TYPE_NAME
+end
 
 #=======================================================================
 
