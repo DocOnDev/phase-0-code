@@ -38,11 +38,6 @@ end
 
 class DensityFactory
   attr_accessor :name, :ceiling, :floor, :factor, :months
-  @name = "Example"
-  @floor = 0
-  @ceiling = 0
-  @factor = 0.0
-  @months = 0.0
 
   @@sub_classes = {}
 
@@ -51,6 +46,7 @@ class DensityFactory
       candidate = _class.new
       return candidate if density_value.between?(candidate.floor, candidate.ceiling)
     }
+    raise ArgumentError, 'Density value did not match any known density'
   end
 
   def self.register_density name
@@ -131,7 +127,6 @@ end
 # DRIVER CODE
  # initialize VirusPredictor for each state
 
-
 alabama = VirusPredictor.new("Alabama", STATE_DATA["Alabama"][:population_density], STATE_DATA["Alabama"][:population])
 alabama.virus_effects
 
@@ -144,6 +139,8 @@ california.virus_effects
 alaska = VirusPredictor.new("Alaska", STATE_DATA["Alaska"][:population_density], STATE_DATA["Alaska"][:population])
 alaska.virus_effects
 
+# will_error = VirusPredictor.new("Nortonia", -150, 1234567)
+# will_error.virus_effects
 
 #=======================================================================
 # Reflection Section
