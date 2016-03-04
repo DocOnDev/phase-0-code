@@ -23,7 +23,7 @@ end
 class Population
   def initialize(count, density_value)
     @count = count
-    @density = Density.new(density_value)
+    @density = Density.create(density_value)
   end
 
   def predicted_deaths
@@ -37,25 +37,6 @@ class Population
 end
 
 class Density
-  def initialize(value)
-    @value = value
-    @density_type = DensityType.create(value)
-  end
-
-  def death_factor
-      @density_type.factor
-  end
-
-  def months_to_spread
-    # We are still perfecting our formula here. The speed is also affected
-    # by additional factors we haven't added into this functionality.
-
-    @density_type.months
-  end
-
-end
-
-class DensityType
   attr_accessor :name, :ceiling, :floor, :factor, :months
   @name = "Example"
   @floor = 0
@@ -63,8 +44,7 @@ class DensityType
   @factor = 0.0
   @months = 0.0
 
-  @@sub_classes = {
-  }
+  @@sub_classes = {}
 
   def self.create density_value
     @@sub_classes.each { |name, data|
@@ -73,12 +53,20 @@ class DensityType
     }
   end
 
-  def self.register_density_type name
+  def self.register_density name
     @@sub_classes[name] = self
+  end
+
+  def death_factor
+    @factor
+  end
+
+  def months_to_spread
+    @months
   end
 end
 
-class ExtremeDensityType < DensityType
+class ExtremeDensity < Density
   TYPE_NAME = "Extreme"
   def initialize
     @name = TYPE_NAME
@@ -87,10 +75,10 @@ class ExtremeDensityType < DensityType
     @factor = 0.4
     @months = 0.5
   end
-  register_density_type TYPE_NAME
+  register_density TYPE_NAME
 end
 
-class HighDensityType < DensityType
+class HighDensity < Density
   TYPE_NAME = "High"
   def initialize
     @name = TYPE_NAME
@@ -99,10 +87,10 @@ class HighDensityType < DensityType
     @factor = 0.3
     @months = 1.0
   end
-  register_density_type TYPE_NAME
+  register_density TYPE_NAME
 end
 
-class NormalDensityType < DensityType
+class NormalDensity < Density
   TYPE_NAME = "Normal"
   def initialize
     @name = TYPE_NAME
@@ -111,10 +99,10 @@ class NormalDensityType < DensityType
     @factor = 0.2
     @months = 1.5
   end
-  register_density_type TYPE_NAME
+  register_density TYPE_NAME
 end
 
-class LowDensityType < DensityType
+class LowDensity < Density
   TYPE_NAME = "Low"
   def initialize
     @name = TYPE_NAME
@@ -123,10 +111,10 @@ class LowDensityType < DensityType
     @factor = 0.1
     @months = 2.0
   end
-  register_density_type TYPE_NAME
+  register_density TYPE_NAME
 end
 
-class TinyDensityType < DensityType
+class TinyDensity < Density
   TYPE_NAME = "Tiny"
   def initialize
     @name = TYPE_NAME
@@ -135,7 +123,7 @@ class TinyDensityType < DensityType
     @factor = 0.05
     @months = 2.5
   end
-  register_density_type TYPE_NAME
+  register_density TYPE_NAME
 end
 
 #=======================================================================
