@@ -76,10 +76,6 @@ class DensityType
   def self.register_density_type name
     @@sub_classes[name] = self
   end
-
-  def display
-    puts "I'm a density type of #{@name} with a floor of #{@floor}"
-  end
 end
 
 class ExtremeDensityType < DensityType
