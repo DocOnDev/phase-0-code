@@ -23,7 +23,7 @@ end
 class Population
   def initialize(count, density_value)
     @count = count
-    @density = Density.create(density_value)
+    @density = DensityFactory.create(density_value)
   end
 
   def predicted_deaths
@@ -36,7 +36,7 @@ class Population
 
 end
 
-class Density
+class DensityFactory
   attr_accessor :name, :ceiling, :floor, :factor, :months
   @name = "Example"
   @floor = 0
@@ -47,8 +47,8 @@ class Density
   @@sub_classes = {}
 
   def self.create density_value
-    @@sub_classes.each { |name, data|
-      candidate = data.new
+    @@sub_classes.each { |name, _class|
+      candidate = _class.new
       return candidate if density_value.between?(candidate.floor, candidate.ceiling)
     }
   end
@@ -66,7 +66,7 @@ class Density
   end
 end
 
-class ExtremeDensity < Density
+class ExtremeDensity < DensityFactory
   TYPE_NAME = "Extreme"
   def initialize
     @name = TYPE_NAME
@@ -78,7 +78,7 @@ class ExtremeDensity < Density
   register_density TYPE_NAME
 end
 
-class HighDensity < Density
+class HighDensity < DensityFactory
   TYPE_NAME = "High"
   def initialize
     @name = TYPE_NAME
@@ -90,7 +90,7 @@ class HighDensity < Density
   register_density TYPE_NAME
 end
 
-class NormalDensity < Density
+class NormalDensity < DensityFactory
   TYPE_NAME = "Normal"
   def initialize
     @name = TYPE_NAME
@@ -102,7 +102,7 @@ class NormalDensity < Density
   register_density TYPE_NAME
 end
 
-class LowDensity < Density
+class LowDensity < DensityFactory
   TYPE_NAME = "Low"
   def initialize
     @name = TYPE_NAME
@@ -114,7 +114,7 @@ class LowDensity < Density
   register_density TYPE_NAME
 end
 
-class TinyDensity < Density
+class TinyDensity < DensityFactory
   TYPE_NAME = "Tiny"
   def initialize
     @name = TYPE_NAME
